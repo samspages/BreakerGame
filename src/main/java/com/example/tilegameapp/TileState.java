@@ -3,6 +3,7 @@ package com.example.tilegameapp;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Represents the state of a 3x3 tile game.
@@ -18,7 +19,7 @@ import java.util.List;
  *s
  * is internally stored as {0, 3, 2, 1, 6, 5, 4, 7, 8}. 
  * 
- * @author John C. Bowers and Samuel H Page
+ * @author Samuel H Page
  */
 public class TileState {
     static int count = 0;
@@ -31,8 +32,11 @@ public class TileState {
      * @param state int[]
      */
     public TileState(int[] state) {
-        this.state = new int[9];
-        for (int i = 0; i < 9; i++) this.state[i] = state[i];
+        this.state = state;
+    }
+
+    public TileState() {
+        state = null; // TODO change
     }
 
     /**
@@ -45,6 +49,63 @@ public class TileState {
         int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
+    }
+
+    /**
+     *
+     * @return a valid State
+     */
+    public static TileState randomValidState() {
+        Random random = new Random();
+        boolean isValid = false;
+        TileState newTileState = null;
+        int[] newState = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+
+        while (!isValid) {
+            for (int i = 0; i < newState.length; i++) {
+                int ranIndex = random.nextInt(newState.length);
+                int temp = newState[ranIndex];
+                newState[ranIndex] = newState[i];
+                newState[i] = temp;
+                newTileState = new TileState(newState);
+            }
+            if (isSolvable(newTileState)) {
+                isValid = true;
+            }
+        }
+
+        return newTileState;
+    }
+
+    /**
+     *
+     * @param tileState - the TileState to check
+     * @return true if the given TileState is solvable. A TileState is solvable
+     *         if the number of inversions is even.
+     */
+    public static boolean isSolvable(TileState tileState) {
+        return getInversionCount(tileState) % 2 == 0;
+    }
+
+    /**
+     * Count number of inversions
+     *
+     * @param tileState - the TileState to check
+     * @return the inversion count
+     */
+    public static int getInversionCount(TileState tileState) {
+        int count = 0;
+
+        for (int i = 0; i < 3 - 1; i++) {
+            for (int j = i + 1; j < 3; j++) {
+                if (tileState.tileAt(j, i) > 0 &&
+                        tileState.tileAt(j, i) > tileState.tileAt(i, j)) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 
     /**
@@ -219,7 +280,7 @@ public class TileState {
     public String toString() {
         String acc = "";
         for (int i = 0; i < 9; i++) {
-            acc += state[i] == 0 ? " " : state[i];
+            acc += state[i];
             acc += i % 3 == 2 ? "\n" : " ";
         }
         return acc;

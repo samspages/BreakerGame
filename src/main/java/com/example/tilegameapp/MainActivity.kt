@@ -2,6 +2,7 @@ package com.example.tilegameapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -10,10 +11,6 @@ class MainActivity : AppCompatActivity() {
     // TODO: get some bitches
     // TODO: get rid of the "TileGameApp" bar, i think we have to switch to a "fullscreen activity"
     // TODO: figure out how to fill in the slotViews, maybe with a different imageView object
-    fun createTileState() {
-        // TODO: call from onCreate(), give random tile state thats checked for winnability
-        // TODO: fill slotViews with their number (?)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // this is the class and method instanced when app is opened
@@ -66,5 +63,12 @@ class MainActivity : AppCompatActivity() {
             // tell player one game is available per day
             // short example of solved game ie. 123456078 -> 123456708 -> 123456780 (W)
         }
+
+        createState();
+    }
+
+    fun createState() {
+
+        val tileState = TileState.randomValidState();
     }
 }
